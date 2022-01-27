@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { doesUserExist } from "../services/firebase";
+import {
+  doesUserExist,
+  getAuthUser,
+  signUpCredentials,
+  storeCredential,
+  updateUserProfile,
+} from "../services/firebase";
 import SignupForm from "./Sign-up-form";
 
 export default function Signup() {
@@ -7,15 +13,30 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [userName, setUserName] = useState("");
+  const [fullName, setFullName] = useState("");
 
-  const handleSubmit =  (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    doesUserExist(userName);
+    doesUserExist(userName)
+      .then((value) => value.length > 0)
+      .then((value) => {
+        if (value) {
+          console.log("already have this userName");
+        } else {
+          signUpCredentials(email, password, userName);
+
+          console.log("create new user with new user name");
+        }
+      });
   };
 
   useEffect(() => {
     document.title = "signup";
   }, []);
+
+  function seeResult() {
+    getAuthUser();
+  }
 
   return (
     <div>
@@ -28,7 +49,10 @@ export default function Signup() {
         password={password}
         setUserName={setUserName}
         userName={userName}
+        fullName={fullName}
+        setFullName={setFullName}
       />
+      <button onClick={seeResult}>seeresult</button>
     </div>
   );
 }

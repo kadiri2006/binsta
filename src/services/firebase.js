@@ -1,22 +1,88 @@
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { useState } from "react";
+import {
+  updateProfile,
+  getAuth,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+
+import { collection, query, where, getDocs } from "firebase/firestore";
+
 import { db } from "../lib/firebase";
 
-export const doesUserExist = (userName) => {
+const doesUserExist = async (userName) => {
   let userNameList = [];
 
-  try {
-    const q = query(collection(db, "users"), where("username", "==", userName));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        userNameList.push(doc.data().username);
-      });
+  const q = query(collection(db, "users"), where("username", "==", userName));
 
-      console.log(userNameList); // first log
-    });
-  } catch (error) {
-    console.log(error);
-  }
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // console.log(doc.data().username);
+    userNameList.push(doc.data().username);
+  });
 
-  console.log(userNameList); //second log
+  return userNameList;
 };
+
+//AUTHENTICATION-SIGNUP
+
+const signUpCredentials = (email, password, userName) => {
+  const auth = getAuth();
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      updateUserProfile(userName);
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      // ..
+    });
+};
+
+//CREATE DOCUMENT
+
+//GET CURRENTLY SIGNED USER
+
+const getAuthUser = () => {
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      console.log(user.uid);
+      console.log(user.displayName);
+
+      // ...
+    } else {
+      // User is signed out
+      console.log("user signout");
+      // ...
+    }
+  });
+};
+
+//UPDATE USER PROFILE
+
+const updateUserProfile = (userName) => {
+  const auth = getAuth();
+  updateProfile(auth.currentUser, {
+    displayName: userName,
+  })
+    .then(() => {
+      // Profile updated!
+      console.log("profile updated");
+      // ...
+    })
+    .catch((error) => {
+      // An error occurred
+      // ...
+      console.log(error);
+    });
+};
+
+export { signUpCredentials, doesUserExist, getAuthUser, updateUserProfile };
