@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 
 import { db } from "../lib/firebase";
 
@@ -25,12 +25,14 @@ const doesUserExist = async (userName) => {
 
 //AUTHENTICATION-SIGNUP
 
-const signUpCredentials = (email, password, userName) => {
+const signUpCredentials = (email, password, userName, fullName) => {
   const auth = getAuth();
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
       // Signed in
       updateUserProfile(userName);
+      await createDocument(userCredential, email, userName, fullName);
+
       // ...
     })
     .catch((error) => {
@@ -43,6 +45,20 @@ const signUpCredentials = (email, password, userName) => {
 };
 
 //CREATE DOCUMENT
+
+async function createDocument(userCredential, email, userName, fullName) {
+  // Add a new document with a generated id.
+  const docRef = await addDoc(collection(db, "users"), {
+    userId: userCredential.user.uid,
+    username: userName.toLowerCase(),
+    fullName,
+    emailAddress: email.toLowerCase(),
+    following: [],
+    followers: [],
+    dateCreated: Date.now(),
+  });
+  console.log("CreateDocument written with ID: ", docRef.id);
+}
 
 //GET CURRENTLY SIGNED USER
 

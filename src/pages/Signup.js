@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import { LOGIN } from "../constants/routes";
 import {
   doesUserExist,
   getAuthUser,
@@ -23,7 +25,7 @@ export default function Signup() {
         if (value) {
           console.log("already have this userName");
         } else {
-          signUpCredentials(email, password, userName);
+          signUpCredentials(email, password, userName, fullName);
 
           console.log("create new user with new user name");
         }
@@ -33,10 +35,6 @@ export default function Signup() {
   useEffect(() => {
     document.title = "signup";
   }, []);
-
-  function seeResult() {
-    getAuthUser();
-  }
 
   return (
     <div>
@@ -52,7 +50,13 @@ export default function Signup() {
         fullName={fullName}
         setFullName={setFullName}
       />
-      <button onClick={seeResult}>seeresult</button>
+      <div className="text-center">
+        already have account?
+        <NavLink to={LOGIN} className="text-center  font-bold text-blue-900">
+          {" "}
+          click here
+        </NavLink>
+      </div>
     </div>
   );
 }

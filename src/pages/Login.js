@@ -1,7 +1,8 @@
 import { set } from "date-fns";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { SIGN_UP } from "../constants/routes";
 
 import { useFireBaseContext } from "../context/firebase";
 import SignForm from "./Sign-form";
@@ -50,6 +51,13 @@ export default function Login() {
         email={email}
         password={password}
       />
+       <div className="text-center">
+        don't have account?
+        <NavLink to={SIGN_UP} className="text-center  font-bold text-blue-900">
+          {" "}
+          SignUp here
+        </NavLink>
+      </div>
     </div>
   );
 }
