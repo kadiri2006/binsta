@@ -82,6 +82,31 @@ const getAuthUser = () => {
   });
 };
 
+//signed user with save data to local storage
+const authUserSaveData =  (setUser) => {
+  const auth = getAuth();
+
+   onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      // const uid = user.uid;
+      // console.log(user.uid);
+      // console.log(user.displayName);
+      localStorage.setItem("authUser", JSON.stringify(user));
+      setUser(user);
+
+      // ...
+    } else {
+      // User is signed out
+      console.log("user signout");
+      localStorage.removeItem("authUser");
+      setUser(null);
+      // ...
+    }
+  });
+};
+
 //UPDATE USER PROFILE
 
 const updateUserProfile = (userName) => {
@@ -101,4 +126,10 @@ const updateUserProfile = (userName) => {
     });
 };
 
-export { signUpCredentials, doesUserExist, getAuthUser, updateUserProfile };
+export {
+  signUpCredentials,
+  doesUserExist,
+  getAuthUser,
+  updateUserProfile,
+  authUserSaveData,
+};

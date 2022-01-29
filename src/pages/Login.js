@@ -1,8 +1,8 @@
 import { set } from "date-fns";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { SIGN_UP } from "../constants/routes";
+import { NavLink, Routes, useNavigate } from "react-router-dom";
+import { SIGN_UP,DASHBOARD } from "../constants/routes";
 
 import { useFireBaseContext } from "../context/firebase";
 import SignForm from "./Sign-form";
@@ -22,7 +22,7 @@ export default function Login() {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        navigate("/signup");
+        navigate(DASHBOARD);
 
         // ...
       })
