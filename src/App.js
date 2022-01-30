@@ -10,8 +10,9 @@ const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Dashboard = lazy(() => import("./pages/dashboard"));
 
-export default  function App() {
+export default function App() {
   const { user } =  useAuthListener();
+  
 
   return (
     <UserContext.Provider value={{ user }}>

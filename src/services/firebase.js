@@ -83,10 +83,11 @@ const getAuthUser = () => {
 };
 
 //signed user with save data to local storage
-const authUserSaveData =  (setUser) => {
+
+/* const authUserSaveData = (setUser) => {
   const auth = getAuth();
 
-   onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, (user) => {
     if (user) {
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
@@ -102,8 +103,38 @@ const authUserSaveData =  (setUser) => {
       console.log("user signout");
       localStorage.removeItem("authUser");
       setUser(null);
+
       // ...
     }
+  });
+};
+ */
+
+const authUserSaveData = (setUser) => {
+  const auth = getAuth();
+
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        // const uid = user.uid;
+        // console.log(user.uid);
+        // console.log(user.displayName);
+        console.log("test");
+        localStorage.setItem("authUser", JSON.stringify(user));
+        resolve(user);
+
+        // ...
+      } else {
+        // User is signed out
+        console.log("user signout");
+        localStorage.removeItem("authUser");
+
+        reject("User not found");
+        // ...
+      }
+    });
   });
 };
 
