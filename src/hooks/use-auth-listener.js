@@ -2,18 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useFireBaseContext } from "../context/firebase";
 import { authUserSaveData } from "../services/firebase";
 
-/* export default function useAuthListener() {
+export default function useAuthListener() {
   const [user, setUser] = useState(null);
   const { firebase } = useFireBaseContext();
   useEffect( () => {
-    // const listener =authUserSaveData(setUser);
-    setUser("ok");
+    const listener =authUserSaveData(setUser);
+    // setUser("ok");
   }, [firebase]);
 
   return { user };
-} */
+}
 
-export default function useAuthListener() {
+
+//part-2 for above code 
+
+/* export default function useAuthListener() {
   const [user, setUser] = useState(null);
   const { firebase } = useFireBaseContext();
   useEffect(() => {
@@ -25,4 +28,4 @@ export default function useAuthListener() {
     setUser(my())
   }, [firebase]);
   return { user };
-}
+} */

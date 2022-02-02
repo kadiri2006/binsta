@@ -3,11 +3,12 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
 import { FireBaseContext } from "./context/firebase";
-import { db, firebase } from "./lib/firebase";
+
+import { userSignOut } from "./services/firebase";
 
 ReactDOM.render(
   <React.StrictMode>
-    <FireBaseContext.Provider value={{ firebase, db }}>
+    <FireBaseContext.Provider value={{ userSignOut }}>
       <App />
     </FireBaseContext.Provider>
   </React.StrictMode>,

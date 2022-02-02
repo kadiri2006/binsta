@@ -3,11 +3,26 @@ import {
   getAuth,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  doc,
+  limit,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
+import { useEffect } from "react";
 
 import { db } from "../lib/firebase";
+
+//check field in document using userName
 
 const doesUserExist = async (userName) => {
   let userNameList = [];
@@ -18,6 +33,24 @@ const doesUserExist = async (userName) => {
   querySnapshot.forEach((doc) => {
     // console.log(doc.data().username);
     userNameList.push(doc.data().username);
+  });
+
+  return userNameList;
+};
+//check field in document using userId
+
+const getUserDoc = async (userId) => {
+  let userNameList = [];
+
+  const q = query(collection(db, "users"), where("userId", "==", userId));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    const updatedData = {
+      ...doc.data(),
+      docId: doc.id,
+    };
+    userNameList.push(updatedData);
   });
 
   return userNameList;
@@ -84,7 +117,7 @@ const getAuthUser = () => {
 
 //signed user with save data to local storage
 
-/* const authUserSaveData = (setUser) => {
+const authUserSaveData = (setUser) => {
   const auth = getAuth();
 
   onAuthStateChanged(auth, (user) => {
@@ -108,9 +141,10 @@ const getAuthUser = () => {
     }
   });
 };
- */
 
-const authUserSaveData = (setUser) => {
+//part-2 for above code
+
+/* const authUserSaveData = (setUser) => {
   const auth = getAuth();
 
   return new Promise((resolve, reject) => {
@@ -121,7 +155,7 @@ const authUserSaveData = (setUser) => {
         // const uid = user.uid;
         // console.log(user.uid);
         // console.log(user.displayName);
-        console.log("test");
+        console.log("user signed in");
         localStorage.setItem("authUser", JSON.stringify(user));
         resolve(user);
 
@@ -136,7 +170,7 @@ const authUserSaveData = (setUser) => {
       }
     });
   });
-};
+}; */
 
 //UPDATE USER PROFILE
 
@@ -157,10 +191,76 @@ const updateUserProfile = (userName) => {
     });
 };
 
+//signOut user
+const userSignOut = () => {
+  const auth = getAuth();
+  signOut(auth)
+    .then(() => {
+      console.log("signout successfully");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+//get All documents
+
+const getSuggestedProfiles = async (userId) => {
+  const q = query(
+    collection(db, "users"),
+    where("userId", "!=", userId),
+    limit(10)
+  );
+
+  const querySnapshot = await getDocs(q);
+  let completeData = [];
+
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    if (!doc.data().followers.includes(userId)) {
+      let data = {
+        ...doc.data(),
+        docId: doc.id,
+      };
+      completeData.push(data);
+    }
+  });
+
+  return completeData;
+};
+
+// ADD USER TO FOLLOWING LIST
+const addToFollowing = async (profile, loggedinUid) => {
+  let response = await getUserDoc(loggedinUid);
+
+  const loggedinRef = doc(db, "users", response[0].docId);
+
+  // Atomically add a new region to the "regions" array field.
+  await updateDoc(loggedinRef, {
+    following: arrayUnion(profile.userId),
+  });
+
+  const requestedRef = doc(db, "users", profile.docId);
+  await updateDoc(requestedRef, {
+    followers: arrayUnion(loggedinUid),
+  });
+
+  // Atomically remove a region from the "regions" array field.
+  /* await updateDoc(washingtonRef, {
+    regions: arrayRemove("east_coast"),
+  }); */
+
+  
+};
+
 export {
   signUpCredentials,
   doesUserExist,
   getAuthUser,
   updateUserProfile,
   authUserSaveData,
+  userSignOut,
+  getUserDoc,
+  getSuggestedProfiles,
+  addToFollowing,
 };
