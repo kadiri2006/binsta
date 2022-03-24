@@ -28,12 +28,19 @@ const doesUserExist = async (userName) => {
   let userNameList = [];
 
   const q = query(collection(db, "users"), where("username", "==", userName));
+  // console.log(q);
 
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    // console.log(doc.data().username);
-    userNameList.push(doc.data().username);
-  });
+  try {
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // console.log(doc.data().username);
+      userNameList.push(doc.data().username);
+    });
+  } catch (error) {
+    console.log(error);
+    alert(error);
+    throw error;
+  }
 
   return userNameList;
 };
@@ -61,18 +68,19 @@ const getUserDoc = async (userId) => {
 const signUpCredentials = (email, password, userName, fullName) => {
   const auth = getAuth();
   createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential) => {
+    .then((userCredential) => {
       // Signed in
+      console.log(`user credential after sign up`, userCredential);
       updateUserProfile(userName);
-      await createDocument(userCredential, email, userName, fullName);
+      createDocument(userCredential, email, userName, fullName);
 
       // ...
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
+      console.log(`sign-up error code ${errorCode}`);
+      console.log(`sign-up error message ${errorMessage}`);
       // ..
     });
 };
@@ -115,13 +123,16 @@ const getAuthUser = () => {
   });
 };
 
-//signed user with save data to local storage
+//save data to local storage when user sign-in
 
 const authUserSaveData = (setUser) => {
   const auth = getAuth();
+  console.log("checkcheck autjh");
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      console.log(`userAuth signed in from -->app--->useauthlistener`, user);
+
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
       // const uid = user.uid;
@@ -129,11 +140,12 @@ const authUserSaveData = (setUser) => {
       // console.log(user.displayName);
       localStorage.setItem("authUser", JSON.stringify(user));
       setUser(user);
+      console.log("userAuth data saved in local storage");
 
       // ...
     } else {
       // User is signed out
-      console.log("user signout");
+      console.log("user not signed in");
       localStorage.removeItem("authUser");
       setUser(null);
 
@@ -181,7 +193,7 @@ const updateUserProfile = (userName) => {
   })
     .then(() => {
       // Profile updated!
-      console.log("profile updated");
+      console.log(`auth profile updated with displayName : ${userName}`);
       // ...
     })
     .catch((error) => {
@@ -249,8 +261,6 @@ const addToFollowing = async (profile, loggedinUid) => {
   /* await updateDoc(washingtonRef, {
     regions: arrayRemove("east_coast"),
   }); */
-
-  
 };
 
 export {

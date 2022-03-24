@@ -5,16 +5,18 @@ import { authUserSaveData } from "../services/firebase";
 export default function useAuthListener() {
   const [user, setUser] = useState(null);
   const { firebase } = useFireBaseContext();
-  useEffect( () => {
-    const listener =authUserSaveData(setUser);
+  // console.log(firebase);
+  
+  
+  useEffect(() => {
+    const listener = authUserSaveData(setUser);
     // setUser("ok");
   }, [firebase]);
 
   return { user };
 }
 
-
-//part-2 for above code 
+//part-2 for above code
 
 /* export default function useAuthListener() {
   const [user, setUser] = useState(null);
