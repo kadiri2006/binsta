@@ -11,7 +11,7 @@ export default function Header() {
 
   
 
-  console.log(`userAuth at header: ${user}`);
+  // console.log(`userAuth at header: ${user}`);
 
 
 

@@ -13,7 +13,7 @@ const Dashboard = lazy(() => import("./pages/dashboard"));
 export default function App() {
   const { user } = useAuthListener();
 
-  console.log(`userAuth value at app: ${user}`);
+  // console.log(`userAuth value at app: ${user}`);
 
   return (
     <UserContext.Provider value={{ user }}>

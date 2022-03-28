@@ -6,7 +6,7 @@ export default function useUserInfo() {
   let { user } = useUserContext();
   let [userData, setUserData] = useState(null);
 
-  console.log(`userAuth value at side bar: ${user}`);
+  // console.log(`userAuth value at side bar: ${user}`);
 
   useEffect(async () => {
     if (user) {

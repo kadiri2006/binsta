@@ -70,10 +70,9 @@ const signUpCredentials = (email, password, userName, fullName) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in
-      console.log(`user credential after sign up`, userCredential);
-      updateUserProfile(userName);
+      // console.log(`user credential after sign up`, userCredential);
+      // updateUserProfile(userName);
       createDocument(userCredential, email, userName, fullName);
-
       // ...
     })
     .catch((error) => {
@@ -127,11 +126,11 @@ const getAuthUser = () => {
 
 const authUserSaveData = (setUser) => {
   const auth = getAuth();
-  console.log("checkcheck autjh");
+  // console.log("app->useAuthListener->authUserSaveData");
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log(`userAuth signed in from -->app--->useauthlistener`, user);
+      // console.log(`userAuth signed in from -->app--->useauthlistener`, user);
 
       // User is signed in, see docs for a list of available properties
       // https://firebase.google.com/docs/reference/js/firebase.User
@@ -140,12 +139,12 @@ const authUserSaveData = (setUser) => {
       // console.log(user.displayName);
       localStorage.setItem("authUser", JSON.stringify(user));
       setUser(user);
-      console.log("userAuth data saved in local storage");
+      // console.log("userAuth data saved in local storage");
 
       // ...
     } else {
       // User is signed out
-      console.log("user not signed in");
+      // console.log("user not signed in");
       localStorage.removeItem("authUser");
       setUser(null);
 
@@ -263,6 +262,63 @@ const addToFollowing = async (profile, loggedinUid) => {
   }); */
 };
 
+let getPhotos = async (id, following) => {
+  let userNameList = [];
+
+  for (let i = 0; i < following.length; i++) {
+    const q = query(
+      collection(db, "photos"),
+      where("userId", "==", following[i])
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const updatedData = {
+        ...doc.data(),
+        imgdocId: doc.id,
+      };
+      userNameList.push(updatedData);
+    });
+  }
+
+  // console.log(userNameList);
+
+  /* let dummy = userNameList.map(async (photo) => {
+    let userLikedPhoto = false;
+    if (photo.likes.includes(id)) {
+      userLikedPhoto = true;
+    }
+
+    const user = await getUserDoc(photo.userId);
+
+    console.log(user);
+
+    const { username } = user[0];
+    return { username, ...photo, userLikedPhoto };
+  });
+
+  console.log(dummy); */
+
+  const photosWithUserDetails = await Promise.all(
+    userNameList.map(async (photo) => {
+      let userLikedPhoto = false;
+      if (photo.likes.includes(id)) {
+        userLikedPhoto = true;
+      }
+
+      const user = await getUserDoc(photo.userId);
+
+      // console.log(user);
+
+      const { username } = user[0];
+      return { username, ...photo, userLikedPhoto };
+    })
+  );
+
+  // console.log(`photowithuserdetails`, photosWithUserDetails);
+  return photosWithUserDetails;
+};
+
 export {
   signUpCredentials,
   doesUserExist,
@@ -273,4 +329,5 @@ export {
   getUserDoc,
   getSuggestedProfiles,
   addToFollowing,
+  getPhotos,
 };

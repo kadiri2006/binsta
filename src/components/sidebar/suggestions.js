@@ -6,13 +6,11 @@ import SuggestedProfile from "./suggested-profile";
 export default function Suggestions({ userId }) {
   const [profiles, setProfiles] = useState(null);
 
-
-
   useEffect(() => {
     let suggestedProfiles = async () => {
       const response = await getSuggestedProfiles(userId);
       setProfiles(response);
-      console.log("suggestion", response);
+      // console.log("suggestion", response);
     };
     userId && suggestedProfiles();
   }, [userId]);
@@ -26,7 +24,11 @@ export default function Suggestions({ userId }) {
       </div>
       <div className="mt-4 grid gap-5">
         {profiles.map((profile) => (
-          <SuggestedProfile profile={profile} key={profile.docId} loggedinUid={userId} />
+          <SuggestedProfile
+            profile={profile}
+            key={profile.docId}
+            loggedinUid={userId}
+          />
         ))}
       </div>
     </div>

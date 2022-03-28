@@ -17,7 +17,7 @@ export default function Signup() {
   const [userName, setUserName] = useState("");
   const [fullName, setFullName] = useState("");
 
-  const handleSubmit =(e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     doesUserExist(userName)
       .then((value) => value.length > 0)
@@ -25,9 +25,9 @@ export default function Signup() {
         if (value) {
           console.log("already have this userName");
         } else {
-           signUpCredentials(email, password, userName, fullName);
+          signUpCredentials(email, password, userName, fullName);
 
-          console.log("create new user with new user name");
+          // console.log("create new user with new user name");
         }
       });
   };
