@@ -1,4 +1,6 @@
-import React from "react";
+import React,{useRef} from "react";
+import { PostContext } from "../../context/post";
+
 import Actions from "./Actions";
 
 import Comments from "./comments";
@@ -6,26 +8,24 @@ import Footer from "./footer";
 import Header from "./Header";
 import Image from "./Image";
 
+
 export default function Post({ photo }) {
   console.log(photo);
 
+  const inputRef = useRef(null)
+                
+
   return (
-    <div className="rounded col-span-4 border bg-white border-gray-primary mb-16">
-      <Header username={photo.username} />
-      <Image src={photo.imageSrc} caption={photo.caption} />
-      <Actions />
-      <Footer />
-      <Comments /> 
-      
-    </div>
+    <PostContext.Provider value={photo}>
+      <div className="rounded col-span-4 border bg-white border-gray-primary mb-16">
+        <Header username={photo.username} />
+        <Image src={photo.imageSrc} caption={photo.caption} />
+        <Actions photo={photo} inputRef={inputRef} />
+        <Footer />
+        <Comments inputRef={inputRef} />
+      </div>
+    </PostContext.Provider>
   );
 }
 
-Post.prototype = {
-  photo: window.PropTypes.shape({
-    /* username: window.PropTypes.string.isRequired,
-    imageSrc: window.PropTypes.string.isRequired,
-    likes: window.PropTypes.arrayOf(window.PropTypes.string).isRequired,
-    dateCreated: window.PropTypes.number.isRequired, */
-  }),
-};
+

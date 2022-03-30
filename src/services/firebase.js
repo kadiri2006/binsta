@@ -18,7 +18,6 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import { useEffect } from "react";
 
 import { db } from "../lib/firebase";
 
@@ -71,7 +70,7 @@ const signUpCredentials = (email, password, userName, fullName) => {
     .then((userCredential) => {
       // Signed in
       // console.log(`user credential after sign up`, userCredential);
-      // updateUserProfile(userName);
+      updateUserProfile(userName);
       createDocument(userCredential, email, userName, fullName);
       // ...
     })
@@ -319,6 +318,30 @@ let getPhotos = async (id, following) => {
   return photosWithUserDetails;
 };
 
+//update document field
+
+let likeFunction = async (imgdocId, authId, toggle) => {
+  const likeRef = doc(db, "photos", imgdocId);
+
+  // Atomically add a new region to the "regions" array field.
+  if (toggle === "add") {
+    await updateDoc(likeRef, {
+      likes: arrayUnion(authId),
+    });
+  } else {
+    // Atomically remove a region from the "regions" array field.
+    await updateDoc(likeRef, {
+      likes: arrayRemove(authId),
+    });
+  }
+
+  if (toggle === "comment") {
+    await updateDoc(likeRef, {
+      comments: arrayUnion(authId),
+    });
+  }
+};
+
 export {
   signUpCredentials,
   doesUserExist,
@@ -330,4 +353,5 @@ export {
   getSuggestedProfiles,
   addToFollowing,
   getPhotos,
+  likeFunction,
 };

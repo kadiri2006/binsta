@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserContext } from "../../context/user";
 
-export default function Actions() {
+import { likeFunction } from "../../services/firebase";
+
+export default function Actions({ photo, inputRef }) {
   let {
     user: { uid: authId },
   } = useUserContext();
+
+  const [like, setLike] = useState(photo.userLikedPhoto);
+  const [likeCount, setLikeCount] = useState(photo.likes.length);
+
+  let toggleLikes = () => {
+    // console.log(photo);
+    if (like) {
+      likeFunction(photo.imgdocId, authId, "remove");
+      setLikeCount(likeCount - 1);
+    } else {
+      likeFunction(photo.imgdocId, authId, "add");
+      setLikeCount(likeCount + 1);
+    }
+
+    setLike(!like);
+  };
 
   return (
     <>
@@ -16,7 +34,10 @@ export default function Actions() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             tabIndex={0}
-            className="w-8 mr-4 cursor-pointer focus:outline-none"
+            className={`w-8 mr-4 cursor-pointer focus:outline-none ${
+              like && "text-red-500"
+            }`}
+            onClick={toggleLikes}
           >
             <path
               strokeLinecap="round"
@@ -32,6 +53,7 @@ export default function Actions() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             tabIndex={0}
+            onClick={() => inputRef.current.focus()}
           >
             <path
               strokeLinecap="round"
@@ -41,10 +63,10 @@ export default function Actions() {
             />
           </svg>
         </div>
-          </div>
-          <div className="p-4 py-0">
-             <p className="font-bold">0 likes</p>
-          </div>
+      </div>
+      <div className="p-4 py-0">
+        <p className="font-bold">{likeCount}likes</p>
+      </div>
     </>
   );
 }

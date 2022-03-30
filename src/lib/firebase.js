@@ -22,4 +22,4 @@ const db = getFirestore();
 
 // seedDatabase();
 
-export { firebase, db };
+export { db };

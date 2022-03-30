@@ -12,9 +12,7 @@ export default function Timeline() {
     <div className="container col-span-2">
       {photos ? (
         photos.length > 0 ? (
-          photos.map((photo) => (
-            <Post photo={photo} key={photo.imgdocId} />
-          ))
+          photos.map((photo) => <Post photo={photo} key={photo.imgdocId} />)
         ) : (
           <p>follow persons</p>
         )
