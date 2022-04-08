@@ -207,6 +207,8 @@ const userSignOut = () => {
   signOut(auth)
     .then(() => {
       console.log("signout successfully");
+      return true;
+    
     })
     .catch((error) => {
       console.log(error);

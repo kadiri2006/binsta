@@ -1,7 +1,9 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import * as ROUTES from "./constants/routes";
 import { UserContext } from "./context/user";
+import IsUserloggedIn from "./helpers/isUserloggedIn";
+import ProtectedRoute from "./helpers/protectedRoute";
 
 import useAuthListener from "./hooks/use-auth-listener";
 import NotFound from "./pages/not-found";
@@ -11,9 +13,14 @@ const Signup = lazy(() => import("./pages/Signup"));
 const Dashboard = lazy(() => import("./pages/dashboard"));
 
 export default function App() {
-  const { user } = useAuthListener();
+  let { user } = useAuthListener();
+
+  // console.log(user);
+
+  // console.log(user?.displayName);
 
   // console.log("userAuth value at app", user);
+  //gives user value if user logged in
 
   return (
     <UserContext.Provider value={{ user }}>
@@ -23,7 +30,9 @@ export default function App() {
             path={ROUTES.LOGIN}
             element={
               <React.Suspense fallback={<>...</>}>
-                <Login />
+                <IsUserloggedIn>
+                  <Login />
+                </IsUserloggedIn>
               </React.Suspense>
             }
           />
@@ -31,7 +40,9 @@ export default function App() {
             path={ROUTES.SIGN_UP}
             element={
               <React.Suspense fallback={<>...</>}>
-                <Signup />
+                <IsUserloggedIn>
+                  <Signup />
+                </IsUserloggedIn>
               </React.Suspense>
             }
           />
@@ -39,7 +50,9 @@ export default function App() {
             path={ROUTES.DASHBOARD}
             element={
               <React.Suspense fallback={<>...</>}>
-                <Dashboard />
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
               </React.Suspense>
             }
           />

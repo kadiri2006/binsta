@@ -13,6 +13,10 @@ export default function useUserInfo() {
       let [data] = await getUserDoc(user.uid);
       setUserData(data);
     }
+
+    /* return () => {
+      setUserData(null);
+    }; */
   }, [user]);
 
   return new Promise((res, rej) => {

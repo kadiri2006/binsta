@@ -9,7 +9,7 @@ export default function Comments({inputRef}) {
 
   const [editableComments, setEditableComments] = useState(comments);
 
-  console.log(editableComments);
+  // console.log(editableComments);
 
   return (
     <>

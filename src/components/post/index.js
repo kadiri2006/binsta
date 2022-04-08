@@ -10,7 +10,7 @@ import Image from "./Image";
 
 
 export default function Post({ photo }) {
-  console.log(photo);
+  // console.log(photo);
 
   const inputRef = useRef(null)
                 
