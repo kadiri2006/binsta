@@ -8,7 +8,6 @@ import { useFireBaseContext } from "../context/firebase";
 export default function Header() {
   const { user } = useUserContext();
   const { userSignOut } = useFireBaseContext();
-  let navigate = useNavigate();
 
   // console.log(`userAuth at header: ${user}`);
 
@@ -44,8 +43,10 @@ export default function Header() {
                 <button
                   type="button"
                   title="Sign Out"
-                  onClick={() => userSignOut(navigate(ROUTES.LOGIN))}
-                
+                  onClick={() =>
+                    userSignOut()
+                  } /* if we use navigate("/login") its gives some error
+                                                      when we signout why? */
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -7,6 +7,7 @@ import ProtectedRoute from "./helpers/protectedRoute";
 
 import useAuthListener from "./hooks/use-auth-listener";
 import NotFound from "./pages/not-found";
+import Profile from "./pages/profile";
 
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -56,6 +57,7 @@ export default function App() {
               </React.Suspense>
             }
           />
+          <Route path={ROUTES.PROFILE} element={<Profile />} />
           <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
         </Routes>
       </BrowserRouter>
