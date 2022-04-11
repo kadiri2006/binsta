@@ -30,6 +30,7 @@ export default function Header() {
           <div className="text-gray-700 text-center flex items-center align-items space-x-5">
             {user ? (
               <>
+                
                 <Link to={ROUTES.DASHBOARD}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +67,7 @@ export default function Header() {
                 <div className="flex items-center cursor-pointer">
                   <Link to="/">
                     <img
-                      src={`/images/avatars/${user.uid}.jpeg`}
+                      src={`/images/avatars/${user.displayName}.jpeg`}
                       alt=""
                       className="rounded-full h-8 w-8 flex"
                     />

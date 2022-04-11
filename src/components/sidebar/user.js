@@ -9,7 +9,7 @@ export default function User({ fullName, username,userId }) {
     >
       <div className="flex items-center justify-between col-span-1">
         <img
-          src={`/images/avatars/${userId}.jpeg`}
+          src={`/images/avatars/${username}.jpeg`}
           alt=""
           className="rounded-full w-16 flex mr-3"
         />

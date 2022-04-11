@@ -33,6 +33,7 @@ const doesUserExist = async (userName) => {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // console.log(doc.data().username);
+      // console.log(doc.data(), doc.id);
       userNameList.push(doc.data().username);
     });
   } catch (error) {
@@ -45,10 +46,14 @@ const doesUserExist = async (userName) => {
 };
 //check field in document using userId
 
-const getUserDoc = async (userId) => {
+const getUserDoc = async (userId, userName) => {
   let userNameList = [];
-
-  const q = query(collection(db, "users"), where("userId", "==", userId));
+  let q;
+  if (userName) {
+    q = query(collection(db, "users"), where("username", "==", userName));
+  } else {
+    q = query(collection(db, "users"), where("userId", "==", userId));
+  }
 
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
@@ -95,6 +100,7 @@ async function createDocument(userCredential, email, userName, fullName) {
     following: [],
     followers: [],
     dateCreated: Date.now(),
+    photos: [],
   });
   console.log("CreateDocument written with ID: ", docRef.id);
 }
@@ -208,7 +214,6 @@ const userSignOut = () => {
     .then(() => {
       console.log("signout successfully");
       return true;
-    
     })
     .catch((error) => {
       console.log(error);
@@ -262,6 +267,39 @@ const addToFollowing = async (profile, loggedinUid) => {
     regions: arrayRemove("east_coast"),
   }); */
 };
+
+////////////////////////test/////////////
+
+const toggleFunction = async (profileId, loginId, toggle) => {
+  let profile = await getUserDoc(profileId);
+  const profileRef = doc(db, "users", profile[0].docId);
+  let login = await getUserDoc(loginId);
+  const loginRef = doc(db, "users", login[0].docId);
+
+  switch (toggle) {
+    case "remove":
+      // Atomically remove a region from the "regions" array field.
+      await updateDoc(profileRef, {
+        followers: arrayRemove(loginId),
+      });
+      await updateDoc(loginRef, {
+        following: arrayRemove(profileId),
+      });
+
+      break;
+    case "add":
+      await updateDoc(profileRef, {
+        followers: arrayUnion(loginId),
+      });
+      await updateDoc(loginRef, {
+        following: arrayUnion(profileId),
+      });
+
+      break;
+  }
+};
+
+////////////////////
 
 let getPhotos = async (id, following) => {
   let userNameList = [];
@@ -356,4 +394,5 @@ export {
   addToFollowing,
   getPhotos,
   likeFunction,
+  toggleFunction,
 };

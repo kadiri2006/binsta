@@ -5,12 +5,14 @@ import SuggestedProfile from "./suggested-profile";
 
 export default function Suggestions({ userId }) {
   const [profiles, setProfiles] = useState(null);
+  // console.log(userId);
 
   useEffect(() => {
     let suggestedProfiles = async () => {
       const response = await getSuggestedProfiles(userId);
-      setProfiles(response);
+      
       // console.log("suggestion", response);
+      setProfiles(response);
     };
     userId && suggestedProfiles();
   }, [userId]);
