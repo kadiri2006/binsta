@@ -7,6 +7,8 @@ export default function usePhotos() {
   const [photos, setPhotos] = useState(null);
   let { user } = useUserContext();
 
+  // console.log(user);
+
   useEffect(() => {
     if (user) {
       async function fetchPhotos() {

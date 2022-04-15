@@ -13,11 +13,12 @@ export default function Profile() {
   let initialState = {
     userName: "",
     fullName: "",
-    photoCount: [],
+    profileImg: "",
     followersCount: [],
     followingCount: [],
     btn: true,
     profileId: "",
+    profileDocId:""
   };
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -29,7 +30,8 @@ export default function Profile() {
 
   useEffect(() => {
     getUserDoc(false, id).then((x) => {
-      let [{ username, fullName, photos, followers, following, userId }] = x;
+      // console.log(x);
+      let [{ username, fullName, followers, following, userId ,profileImg,docId}] = x;
       // console.log(username);
       // console.log(userId);
 
@@ -39,11 +41,12 @@ export default function Profile() {
         dispatch({
           userName: username,
           fullName,
-          photoCount: photos,
+          profileImg,
           followersCount: followers,
           followingCount: following,
           btn,
           profileId: userId,
+          profileDocId:docId
         });
       }
     });
@@ -53,7 +56,7 @@ export default function Profile() {
     <div className="bg-gray-background">
       <Header />
       <div className="mx-auto max-w-screen-lg">
-        <ProfileData.Provider value={{profile:state,dispatch}}>
+        <ProfileData.Provider value={{ profile: state, dispatch }}>
           <Userprofile />
         </ProfileData.Provider>
       </div>

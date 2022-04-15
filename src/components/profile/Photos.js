@@ -1,26 +1,56 @@
-import React from "react";
+import { data } from "autoprefixer";
+import React, { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useProfileData } from "../../context/profileData";
+import { getPostedImgData } from "../../services/firebase";
 
 export default function Photos() {
   let {
-    profile: { photoCount, userName },
+    profile: { userName, profileId },
   } = useProfileData();
+
+  let [photosData, setPhotosData] = React.useState([]);
+  // console.log(photosData);
   // console.log(profile);
   // let { photoCount, userName } = useProfileData();
   // let x= useProfileData();
-  // console.log(photoCount);
+  // console.log(profileId);
+
+  useEffect(() => {
+    // console.log(profileId);
+
+    if (profileId) {
+      let imagesData = [];
+      getPostedImgData(profileId)
+        .then((x) => {
+          for (let index = 0; index < x.length; index++) {
+            let data = {};
+            data.imgURL = x[index].imageSrc;
+            data.likes = x[index].likes;
+            data.comments = x[index].comments;
+            imagesData.push(data);
+          }
+
+          // console.log(x);
+        })
+        .finally(() => {
+          setPhotosData(imagesData);
+          // console.log(imagesData);
+        });
+    }
+  }, [profileId]);
+
   // console.log(userName);
   return (
     <div className="h-16 border-t border-gray-primary mt-12 pt-4">
-      {photoCount.length > 0 ? (
+      {photosData.length > 0 ? (
         <div className="grid grid-cols-3 gap-8 mt-4 mb-12">
-          {photoCount.map((url, key) => (
+          {photosData.map((data, key) => (
             <div className="relative group" key={key}>
-              <img src={url} />
+              <img src={data.imgURL} className="group-hover:opacity-50" />
 
-              <div className="absolute bottom-0 left-0 bg-gray-200 z-10 w-full justify-evenly items-center h-full bg-black-faded group-hover:flex hidden">
-                <p className="flex items-center text-white font-bold">
+              <div className="absolute bottom-0 left-0  z-10 w-full justify-evenly items-center h-full  group-hover:flex hidden">
+                <p className="flex items-center text-black font-bold">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
@@ -33,10 +63,10 @@ export default function Photos() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  photolikeslength
+                  {data.likes.length}
                 </p>
 
-                <p className="flex items-center text-white font-bold">
+                <p className="flex items-center text-black font-bold">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
@@ -49,7 +79,7 @@ export default function Photos() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  photo comments length
+                  {data.comments.length}
                 </p>
               </div>
             </div>

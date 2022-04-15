@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { DEFAULT_IMAGE_PATH } from "../../constants/routes";
 
-export default function User({ fullName, username,userId }) {
+export default function User({ fullName, username,userId,profileImg }) {
   return (
     <Link
       to={`/p/${username}`}
@@ -9,9 +10,10 @@ export default function User({ fullName, username,userId }) {
     >
       <div className="flex items-center justify-between col-span-1">
         <img
-          src={`/images/avatars/${username}.jpeg`}
-          alt=""
+          src={profileImg}
+          alt={JSON.parse(localStorage.getItem("url"))}
           className="rounded-full w-16 flex mr-3"
+          onError={(e)=>e.target.src=DEFAULT_IMAGE_PATH}
         />
       </div>
       <div className="col-span-3">

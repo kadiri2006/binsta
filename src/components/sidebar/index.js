@@ -11,6 +11,8 @@ export default function Sidebar() {
 
   useUserInfo().then((data) => setSignInUserData(data));
 
+  // console.log(signInUserData);
+
   return (
     <>
       {Object.keys(signInUserData).length > 0 ? (
@@ -19,6 +21,7 @@ export default function Sidebar() {
             username={signInUserData.username}
             fullName={signInUserData.fullName}
             userId={signInUserData.userId}
+            profileImg={signInUserData.profileImg}
           />
           <Suggestions userId={signInUserData.userId} />
         </div>

@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/user";
 import useAuthListener from "../hooks/use-auth-listener";
 import * as ROUTES from "../constants/routes";
 import { useFireBaseContext } from "../context/firebase";
+import useUserInfo from "../hooks/use-user";
 
 export default function Header() {
   const { user } = useUserContext();
   const { userSignOut } = useFireBaseContext();
+  let [imgURL, setImgURL] = useState(JSON.parse(localStorage.getItem("url")));
 
-  // console.log(`userAuth at header: ${user}`);
+  useUserInfo().then((data) => {
+    localStorage.setItem("url", JSON.stringify(data.profileImg));
+
+    setImgURL(data.profileImg);
+  });
+
+  // console.log("at header",user);
 
   return (
     <header className="h-16 bg-white border-b border-gray-primary mb-8">
@@ -19,7 +27,7 @@ export default function Header() {
             <h1 className="flex justify-center w-full">
               <Link to={ROUTES.DASHBOARD}>
                 <img
-                  src="/images/avatars/ok.webp"
+                  src={ROUTES.DEFAULT_IMAGE_PATH}
                   alt=""
                   className="h-10 mt-2 w-6/12"
                 />
@@ -30,7 +38,6 @@ export default function Header() {
           <div className="text-gray-700 text-center flex items-center align-items space-x-5">
             {user ? (
               <>
-                
                 <Link to={ROUTES.DASHBOARD}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -44,9 +51,10 @@ export default function Header() {
                 <button
                   type="button"
                   title="Sign Out"
-                  onClick={() =>
-                    userSignOut()
-                  } /* if we use navigate("/login") its gives some error
+                  onClick={() => {
+                    localStorage.clear();
+                    userSignOut();
+                  }} /* if we use navigate("/login") its gives some error
                                                       when we signout why? */
                 >
                   <svg
@@ -67,9 +75,12 @@ export default function Header() {
                 <div className="flex items-center cursor-pointer">
                   <Link to="/">
                     <img
-                      src={`/images/avatars/${user.displayName}.jpeg`}
+                      src={imgURL}
                       alt=""
                       className="rounded-full h-8 w-8 flex"
+                      onError={(e) =>
+                        (e.target.src = ROUTES.DEFAULT_IMAGE_PATH)
+                      }
                     />
                   </Link>
                 </div>

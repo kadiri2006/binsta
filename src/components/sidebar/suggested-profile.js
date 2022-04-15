@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
+import { DEFAULT_IMAGE_PATH } from "../../constants/routes";
 import { addToFollowing } from "../../services/firebase";
 
 export default function SuggestedProfile({ profile, loggedinUid }) {
@@ -13,12 +14,15 @@ export default function SuggestedProfile({ profile, loggedinUid }) {
     setShow(false);
   };
 
+  // console.log(profile);
+
   return !followed ? (
     <div className="flex flex-row items-center align-items justify-between">
       <div className="flex items-center justify-between">
         <img
           className="rounded-full w-8 flex mr-3"
-          src={`/images/avatars/${profile.userId}.webp`}
+          src={profile.profileImg}
+          onError={e=>e.target.src=DEFAULT_IMAGE_PATH}
         />
         <Link to={`/p/${profile.username}`}>
           <p className="font-bold text-sm">{profile.username}</p>

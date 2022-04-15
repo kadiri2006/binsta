@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useNavigate } from "react-router-dom";
+import { DEFAULT_IMAGE_PATH } from "../../constants/routes";
 import { useProfileData } from "../../context/profileData";
 import { useUserContext } from "../../context/user";
-import { toggleFunction } from "../../services/firebase";
+import { toggleFunction, updateProfileImg } from "../../services/firebase";
 
 export default function Header() {
   let { profile, dispatch } = useProfileData();
@@ -43,17 +44,48 @@ export default function Header() {
     }
   };
 
+  let changeImage = (e) => {
+    // console.log(e.target.files[0]);
+    let imageData = new FormData();
+    imageData.append("file", e.target.files[0]);
+    imageData.append("upload_preset", "instagram");
+
+    fetch("https://api.cloudinary.com/v1_1/kadiricloud/image/upload", {
+      method: "post",
+      body: imageData,
+    })
+      .then((x) => x.json())
+      .then((data) => {
+        updateProfileImg(profile.profileDocId,data.url);
+        dispatch({ ...profile, profileImg: data.url });
+      })
+
+      .catch((x) => console.log(x));
+  };
+
   return profile.userName ? (
     <div className="grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg">
-      <div className="container flex justify-center items-center">
-        <img
-          className="rounded-full h-40 w-40 flex"
-          alt={`full name profile picture`}
-          src={`/images/avatars/${profile.userName}.jpeg`}
-          /*  onError={(e) => {
-            e.target.src = DEFAULT_IMAGE_PATH;
-          }} */
-        />
+      <div className="container flex justify-center items-center  ">
+        <div className="relative group flex justify-center items-center">
+          <img
+            className="rounded-full h-40 w-40 flex group-hover:opacity-5"
+            alt={`full name profile picture`}
+            src={profile.profileImg}
+            onError={(e) => {
+              e.target.src = DEFAULT_IMAGE_PATH;
+            }}
+          />
+          <label htmlFor="image" className="absolute hidden group-hover:block ">
+            <img src="/images/plus.png" />
+          </label>
+          <input
+            type="file"
+            name="image"
+            id="image"
+            className=" hidden"
+            onChange={(e) => changeImage(e)}
+          />
+        </div>
       </div>
       <div className="flex items-center justify-center flex-col col-span-2">
         <div className="container flex items-center">
@@ -71,10 +103,6 @@ export default function Header() {
           )}
         </div>
         <div className="container flex mt-4">
-          <p className="mr-10">
-            <span className="font-bold">{profile.photoCount.length}</span>{" "}
-            photos
-          </p>
           <p className="mr-10">
             <span className="font-bold">{profile.followersCount.length}</span>
             {` `}followers

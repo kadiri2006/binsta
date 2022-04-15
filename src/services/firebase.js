@@ -67,6 +67,24 @@ const getUserDoc = async (userId, userName) => {
   return userNameList;
 };
 
+//get userPosted photos data
+const getPostedImgData = async (userId) => {
+  let imagesData = [];
+
+  let q = query(collection(db, "photos"), where("userId", "==", userId));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    const updatedData = {
+      ...doc.data(),
+      docId: doc.id,
+    };
+    imagesData.push(updatedData);
+  });
+
+  return imagesData;
+};
+
 //AUTHENTICATION-SIGNUP
 
 const signUpCredentials = (email, password, userName, fullName) => {
@@ -100,7 +118,7 @@ async function createDocument(userCredential, email, userName, fullName) {
     following: [],
     followers: [],
     dateCreated: Date.now(),
-    photos: [],
+    profileImg: "abc",
   });
   console.log("CreateDocument written with ID: ", docRef.id);
 }
@@ -382,6 +400,14 @@ let likeFunction = async (imgdocId, authId, toggle) => {
   }
 };
 
+let updateProfileImg = async (docId, imgURL) => {
+  console.log(docId, imgURL);
+  const docRef = doc(db, "users", docId);
+  await updateDoc(docRef, {
+    profileImg: imgURL,
+  });
+};
+
 export {
   signUpCredentials,
   doesUserExist,
@@ -395,4 +421,6 @@ export {
   getPhotos,
   likeFunction,
   toggleFunction,
+  getPostedImgData,
+  updateProfileImg,
 };
