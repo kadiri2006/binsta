@@ -18,6 +18,8 @@ export default function Header() {
     // console.log(user);
     if (user?.uid) {
       if (profile.followersCount.includes(user.uid)) setIsFollow(true);
+
+      // console.log("loginUser id",user.uid,"profileId",profile.profileId);
       // setIsFollow(false);
     }
     // profile.userName
@@ -56,7 +58,7 @@ export default function Header() {
     })
       .then((x) => x.json())
       .then((data) => {
-        updateProfileImg(profile.profileDocId,data.url);
+        updateProfileImg(profile.profileDocId, data.url);
         dispatch({ ...profile, profileImg: data.url });
       })
 
@@ -68,14 +70,21 @@ export default function Header() {
       <div className="container flex justify-center items-center  ">
         <div className="relative group flex justify-center items-center">
           <img
-            className="rounded-full h-40 w-40 flex group-hover:opacity-5"
+            className={`rounded-full h-40 w-40 flex ${
+              !profile.btn && "group-hover:opacity-5"
+            }`}
             alt={`full name profile picture`}
             src={profile.profileImg}
             onError={(e) => {
               e.target.src = DEFAULT_IMAGE_PATH;
             }}
           />
-          <label htmlFor="image" className="absolute hidden group-hover:block ">
+          <label
+            htmlFor="image"
+            className={`absolute hidden group-hover:${
+              !profile.btn && "block"
+            } `}
+          >
             <img src="/images/plus.png" />
           </label>
           <input
