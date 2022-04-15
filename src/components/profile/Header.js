@@ -81,8 +81,8 @@ export default function Header() {
           />
           <label
             htmlFor="image"
-            className={`absolute hidden group-hover:${
-              !profile.btn && "block"
+            className={`absolute hidden ${
+              !profile.btn && "group-hover:block"
             } `}
           >
             <img src="/images/plus.png" />
