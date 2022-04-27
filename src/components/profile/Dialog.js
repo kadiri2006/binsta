@@ -17,13 +17,12 @@ export default function Dialog({ dialog, profileId }) {
 
     console.log(formData.get("file"));
 
-    /*  fetch("https://api.cloudinary.com/v1_1/kadiricloud/image/upload", {
+    fetch("https://api.cloudinary.com/v1_1/kadiricloud/image/upload", {
       method: "post",
       body: formData,
     })
       .then((x) => x.json())
       .then((data) => {
-             
         let caption = formData.get("caption");
         let dateCreated = new Date(data.created_at).getTime();
         let userId = profileId;
@@ -37,10 +36,12 @@ export default function Dialog({ dialog, profileId }) {
           imageSrc,
           comments,
           likes,
-        }).then((x) => alert(x).catch((err) => console.log(err)));
+        })
+          .then((x) => console.log(`after posting sucessfully`, x))
+          .catch((x) => console.log(x));
       })
 
-      .catch((x) => console.log(x)); */
+      .catch((x) => console.log(x));
   };
 
   return (
@@ -58,7 +59,7 @@ export default function Dialog({ dialog, profileId }) {
           >
             X
           </button>
-          <label htmlFor="image" className=" self-center">
+          <label htmlFor="svg" className=" self-center">
             <svg
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -69,7 +70,7 @@ export default function Dialog({ dialog, profileId }) {
                 <circle cx="8.868" cy="8.309" r="1.542"></circle>
               </g>
             </svg>
-            <input type="file" name="file" id="image" className="hidden" />
+            <input type="file" name="file" id="svg" className="hidden" />
           </label>
 
           <textarea
