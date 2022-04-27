@@ -122,6 +122,32 @@ async function createDocument(userCredential, email, userName, fullName) {
   });
   console.log("CreateDocument written with ID: ", docRef.id);
 }
+async function createPost({
+  caption,
+  dateCreated,
+  userId,
+  imageSrc,
+  comments,
+  likes,
+}) {
+  // Add a new document with a generated id.
+
+  console.log(caption, dateCreated, userId, imageSrc, comments, likes);
+
+  try {
+    const docRef = await addDoc(collection(db, "photos"), {
+      caption,
+      comments,
+      dateCreated,
+      imageSrc,
+      likes,
+      userId,
+    });
+    return docRef.id;
+  } catch (e) {
+    throw e;
+  }
+}
 
 //GET CURRENTLY SIGNED USER
 
@@ -423,4 +449,5 @@ export {
   toggleFunction,
   getPostedImgData,
   updateProfileImg,
+  createPost,
 };

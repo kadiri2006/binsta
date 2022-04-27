@@ -49,7 +49,7 @@ export default function Profile() {
           profileDocId:docId
         });
       }
-    });
+    }).catch(x=>console.log("error at src/pages/profile.js",x));
   }, [user?.displayName]);
 
   return (
