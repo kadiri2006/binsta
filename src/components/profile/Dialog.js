@@ -1,9 +1,12 @@
 import React, { useRef, useEffect } from "react";
+import { useImageUpdater } from "../../context/imageUpdater";
 import { createPost } from "../../services/firebase";
 
 export default function Dialog({ dialog, profileId }) {
   const inputRef = useRef(null);
   // console.log(inputRef);
+
+  let { setImageData } = useImageUpdater();
 
   useEffect(() => {
     dialog.value && inputRef.current.showModal();
@@ -37,7 +40,8 @@ export default function Dialog({ dialog, profileId }) {
           comments,
           likes,
         })
-          .then((x) => console.log(`after posting sucessfully`, x))
+          .then((x) => console.log(`posted sucessfully`, x))
+          .then((x) => setImageData([]))
           .catch((x) => console.log(x));
       })
 

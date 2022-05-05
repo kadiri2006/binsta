@@ -1,6 +1,7 @@
 import { data } from "autoprefixer";
 import React, { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
+import { useImageUpdater } from "../../context/imageUpdater";
 import { useProfileData } from "../../context/profileData";
 import { getPostedImgData } from "../../services/firebase";
 
@@ -16,8 +17,12 @@ export default function Photos() {
   // let x= useProfileData();
   // console.log(profileId);
 
+  let { imageData } = useImageUpdater();
+  // console.log("at photos", imageData);
+
   useEffect(() => {
     // console.log(profileId);
+    // console.log("image data updated at useEffect");
 
     if (profileId) {
       let imagesData = [];
@@ -38,7 +43,7 @@ export default function Photos() {
           // console.log(imagesData);
         });
     }
-  }, [profileId]);
+  }, [profileId, imageData]);
 
   // console.log(userName);
   return (

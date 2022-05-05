@@ -13,6 +13,7 @@ export default function Header() {
   let [isFollow, setIsFollow] = useState(false);
 
   let [dialog, setDialog] = useState({ value: false });
+  
 
   // console.log(user);
   //  console.log(profile);
